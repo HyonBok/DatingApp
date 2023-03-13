@@ -1,0 +1,27 @@
+<div class="container mt-5">
+    <div *ngIf="!(registerMode || loginMode)" style="text-align:center;">
+        <h1>Encontre seu parceiro</h1>
+        <p class="lead">Dê uma olhada nos seus parceiros... tudo que precisa é se cadastrar!</p>
+        <div class="text-center">
+            <button (click)="loginToggle()" class="btn btn-primary btn-lg me-2">Login</button>
+            <button (click)="registerToggle()" class="btn btn-primary btn-lg me-2">Registrar-se</button>
+            <button class="btn btn-primary btn-info btn-lg me-2">Leia mais</button>
+        </div>
+    </div>
+
+    <div *ngIf="loginMode" class="container">
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <app-login (cancelLogin)="cancelLoginMode($event)"></app-login>
+            </div>
+        </div>
+    </div>
+    
+    <div *ngIf="registerMode" class="container">
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <app-register (cancelRegister)="cancelRegisterMode($event)"></app-register>
+            </div>
+        </div>
+    </div>
+</div>
