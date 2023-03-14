@@ -1,0 +1,15 @@
+<h4>Internal server error - Recarregue a página</h4>
+<ng-container *ngIf="error">
+    <h5 class="text-danger">Error: {{error.message}}</h5>
+    <p class="font-weight-bold">Note: Se você está vendo isso, provavelmente Angular está funcionando.</p>
+    <p>O que fazer?</p>
+    <ol>
+        <li>Abra o chrome dev tools e olhe as falhas na aba de rede.</li>
+        <li>Examine o pedido URL - Qual API endpoint está sendo requerido?</li>
+        <li>Reproduzir o problema no Postman - Se vier o mesmo problema, Angular não é o problema</li>
+    </ol>
+    <p style="font-weight: bold;">Rota do codigo - As primeiras linhas mostram o que causou o erro:</p>
+    <code class="mt-5" style="background-color: whitesmoke">
+        {{error.details}}
+    </code>
+</ng-container>
