@@ -1,0 +1,25 @@
+.card{
+    transform: scale(1, 1);
+}
+
+.card:hover img{
+    transform: scale(1.2, 1.2);
+    transition-duration: 500ms;
+    transition-timing-function: ease-out;
+}
+
+.card img{
+    transform: scale(1, 1);
+    transition-duration: 500ms;
+    transition-timing-function: ease-out;
+    height: 280px;
+}
+
+.card-img-wrapper{
+    overflow: hidden;
+    position: relative;
+}
+
+.animate {
+    transition: all 0.3s ease-in-out;
+}

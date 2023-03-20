@@ -24,6 +24,14 @@ import { MemberCardComponent } from './members/member-card/member-card.component
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
+import { ProdutoCardComponent } from './produto/produto-card/produto-card.component';
+import { VenderComponent } from './produto/vender/vender.component';
+import { ProdutoDetailComponent } from './produto/produto-detail/produto-detail.component';
+import { ProdutoListComponent } from './produto/produto-list/produto-list.component';
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
+import { ProdutoEditComponent } from './produto/produto-edit/produto-edit.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 
 @NgModule({
   declarations: [
@@ -39,7 +47,13 @@ import { NgxGalleryModule } from '@kolkov/ngx-gallery';
     TestErrorComponent,
     NotFoundComponent,
     ServerErrorComponent,
-    MemberCardComponent
+    MemberCardComponent,
+    ProdutoListComponent,
+    ProdutoCardComponent,
+    VenderComponent,
+    ProdutoDetailComponent,
+    MemberEditComponent,
+    ProdutoEditComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -52,11 +66,15 @@ import { NgxGalleryModule } from '@kolkov/ngx-gallery';
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right'
     }),
-    NgxGalleryModule
+    NgxGalleryModule,
+    NgxSpinnerModule.forRoot({ 
+      type: 'ball-beat' 
+    })
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
 })

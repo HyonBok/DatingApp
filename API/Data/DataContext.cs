@@ -9,7 +9,10 @@ namespace API.Data
         {
         }
 
-        // Tabelas do SQL (Tabela Users)
+        // Tabelas do SQL
+        // (Tabela Users)
         public DbSet<AppUser> Users { get; set; }
+        // (Tabela Produtos)
+        public DbSet<Produto> Produtos { get; set; }
     }
 }

@@ -1,0 +1,15 @@
+<div class="card m-1">
+    <div class="card-img-wrapper">
+        <a routerLink="/produto/{{produto?.nome}}">
+            <img src="{{produto?.foto || './assets/user.png'}}" alt="" class="card-img-top">
+        </a>
+        <ul class="list-inline member-icons animate text-center mt-5">
+            <li class="list-inline-item">
+                <p>{{produto?.nome}} {{produto?.marca}}</p>
+            </li>
+            <li class="list-inline-item">
+                <p>R${{produto?.preco}}</p>
+            </li>
+        </ul>
+    </div>
+</div>

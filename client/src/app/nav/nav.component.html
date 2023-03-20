@@ -1,27 +1,24 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
-    <div class="container-fluid">
-        <a class="navbar-brand" routerLink="/" routerLinkActive="active">Dating App</a>
+    <div class="container-fluid pad">
+        <a class="navbar-brand" routerLink="/" routerLinkActive="active">Mercado do zé</a>
         <ul class="navbar-nav me-auto">
-            <ng-container *ngIf="accountService.currentUser$ | async">
+            <ng-container>
                 <li class="nav-item">
-                    <a class="nav-link" routerLink="/members" routerLinkActive="active">Matches</a>
+                    <a class="nav-link" routerLink="/produtos" routerLinkActive="active">Produtos</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" routerLink="/lists" routerLinkActive="active">Listas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" routerLink="/messages" routerLinkActive="active">Mensagens</a>
+                <li class="nav-item" *ngIf="accountService.currentUser$ | async">
+                    <a class="nav-link" routerLink="/produto/vender" routerLinkActive="active">Vender produto</a>
                 </li>
             </ng-container>
             <li class="nav-item">
-                <a class="nav-link" routerLink="/errors" routerLinkActive="active">Errors</a>
+                <a class="nav-link" routerLink="/errors" routerLinkActive="active">Erros</a>
             </li>
         </ul>
 
         <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
             <a class="dropdown-toggle text-light text-decoration-none" dropdownToggle>Bem-vindo {{user.username | titlecase}}!</a>
             <div class="dropdown-menu mt-3" *dropdownMenu>
-                <a class="dropdown-item">Editar Perfil</a>
+                <a class="dropdown-item" routerLink="/member/edit">Editar Perfil</a>
                 <a class="dropdown-item" (click)="logout()">Logout</a>
             </div>
         </div>

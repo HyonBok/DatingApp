@@ -92,6 +92,43 @@ namespace API.Data.Migrations
                     b.ToTable("Photos");
                 });
 
+            modelBuilder.Entity("API.Entities.Produto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Foto")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Marca")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("TEXT");
+
+                    b.Property<float>("Preco")
+                        .HasColumnType("REAL");
+
+                    b.Property<float>("PrecoPromocao")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("UnidadeVenda")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("Produtos");
+                });
+
             modelBuilder.Entity("API.Entities.Photo", b =>
                 {
                     b.HasOne("API.Entities.AppUser", "AppUser")
@@ -103,9 +140,20 @@ namespace API.Data.Migrations
                     b.Navigation("AppUser");
                 });
 
+            modelBuilder.Entity("API.Entities.Produto", b =>
+                {
+                    b.HasOne("API.Entities.AppUser", "AppUser")
+                        .WithMany("Produtos")
+                        .HasForeignKey("AppUserId");
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("API.Entities.AppUser", b =>
                 {
                     b.Navigation("Photos");
+
+                    b.Navigation("Produtos");
                 });
 #pragma warning restore 612, 618
         }

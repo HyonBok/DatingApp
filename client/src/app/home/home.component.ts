@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Produto } from '../_models/produto';
 import { AccountService } from '../_services/account.service';
+import { ProdutoService } from '../_services/produto.service';
 
 @Component({
   selector: 'app-home',
@@ -10,10 +12,12 @@ export class HomeComponent implements OnInit {
   registerMode = false;
   loginMode = false;
   users: any;
+  produtos: Produto[] = [];
 
-  constructor(private accountService: AccountService) { }
+  constructor(private accountService: AccountService, private produtoService: ProdutoService) { }
 
   ngOnInit(): void {
+    this.carregarProdutos();
   }
 
   registerToggle(){
@@ -32,5 +36,11 @@ export class HomeComponent implements OnInit {
 
   cancelLoginMode(event:boolean) {
     this.loginMode = event;
+  }
+
+  carregarProdutos(){
+    this.produtoService.getProdutos().subscribe({
+      next: produtos => this.produtos = produtos
+    })
   }
 }

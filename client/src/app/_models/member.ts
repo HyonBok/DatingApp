@@ -1,4 +1,5 @@
 import { Photo } from "./photo";
+import { Produto } from "./produto";
 export interface Member {
     id: number;
     userName: string;
@@ -14,4 +15,5 @@ export interface Member {
     city: string;
     country: string;
     photos: Photo[];
+    produtos: Produto[];
 }

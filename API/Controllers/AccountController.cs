@@ -18,7 +18,6 @@ namespace API.Controllers
         {
             _tokenService = tokenService;
             _context = context;
-            
         }
 
         [HttpPost("register")] // Post: api/account/register
