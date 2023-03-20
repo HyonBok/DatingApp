@@ -1,6 +1,9 @@
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Interfaces;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +13,14 @@ namespace API.Controllers
     public class ProdutoController : BaseApiController
     {
         private readonly DataContext _context;
-        public ProdutoController(DataContext context)
+        private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
+        public ProdutoController(DataContext context, IMapper mapper, IUserRepository userRepository)
         {
             // Recebe o contexto do banco de dados
             _context = context;
+            _mapper = mapper;
+            _userRepository = userRepository;
         }
 
         [HttpGet("{nome}")] // Get: api/produto/listar/{nome}
@@ -45,17 +52,20 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost("registrar")] // Post: api/produto/registrar
-        public async Task<ActionResult<ProdutoDto>> RegistrarProduto(RegistrarProdutoDto registroDto){
+        public async Task<ActionResult<ProdutoDto>> RegistrarProduto(RegistrarProdutoDto registroProdutoDto){
             var produto = new Produto
             {
-                Nome = registroDto.Nome,
-                Preco = registroDto.Preco,
-                Foto = registroDto.Foto,
-                Marca = registroDto.Marca,
-                Descricao = registroDto.Descricao,
-                UnidadeVenda = registroDto.UnidadeVenda,
+                Nome = registroProdutoDto.Nome,
+                Preco = registroProdutoDto.Preco,
+                Foto = registroProdutoDto.Foto,
+                Marca = registroProdutoDto.Marca,
+                UnidadeVenda = registroProdutoDto.UnidadeVenda,
             };
 
+            var user = await _context.Users
+                .SingleOrDefaultAsync(users => users.UserName == registroProdutoDto.UserName);
+            user.Produtos.Add(produto);
+            
             _context.Produtos.Add(produto);
             await _context.SaveChangesAsync();
 
@@ -65,11 +75,20 @@ namespace API.Controllers
                 Preco = produto.Preco,
                 Foto = produto.Foto,
                 Marca = produto.Marca,
-                Descricao = produto.Descricao,
                 UnidadeVenda = produto.UnidadeVenda,
             };
             
             return produtoDto;
+        }
+
+        //[Authorize]
+        [HttpGet("listself/{nome}")]
+        public async Task<ActionResult<IEnumerable<Produto>>> ListarProdutosUsuario(string nome){
+            var user = await _context.Users
+                .Include(p => p.Produtos)
+                .SingleOrDefaultAsync(x => x.UserName.ToLower() == nome.ToLower());
+
+            return Ok(user.Produtos);
         }
     }
 }

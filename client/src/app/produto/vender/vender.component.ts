@@ -14,31 +14,31 @@ import { ProdutoService } from '../../_services/produto.service';
 })
 export class VenderComponent implements OnInit {
   produto: any = {};
-  // user: User | null = null;
-  // member: Member | undefined;
+  user: User | null = null;
+  member: Member | undefined;
 
   constructor(private accountService: AccountService, private produtoService: ProdutoService, 
     private memberService: MembersService, private toastr: ToastrService) { 
-      // this.accountService.currentUser$.pipe(take(1)).subscribe({
-      //   next: user => this.user = user
-      // })
+      this.accountService.currentUser$.pipe(take(1)).subscribe({
+        next: user => this.user = user
+      })
     }
 
   ngOnInit(): void {
-    // this.loadMember();
+    this.loadMember();
   }
 
-  // loadMember(){
-  //   if(!this.user) return;
-  //   this.memberService.getMember(this.user.username).subscribe({
-  //     next: member => this.member = member
-  //   })
-  // }
+  loadMember(){
+    if(!this.user) return;
+    this.memberService.getMember(this.user.username).subscribe({
+      next: member => this.member = member
+    })
+  }
 
   vender(){
     if(!this.produto) return;
-    //if(!this.member) return;
-    //this.produto.appuser = this.member;
+    if(!this.member) return;
+    this.produto.userName = this.member.userName;
     this.produtoService.registrarProduto(this.produto).subscribe({
       error: error => this.toastr.error(error.error)
     })

@@ -8,5 +8,5 @@ export interface Produto {
     descricao: string;
     unidadeVenda: string;
     foto: string;
-    appuser: Member;
+    userName: string;
 }

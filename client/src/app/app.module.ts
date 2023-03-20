@@ -32,6 +32,7 @@ import { MemberEditComponent } from './members/member-edit/member-edit.component
 import { ProdutoEditComponent } from './produto/produto-edit/produto-edit.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
+import { ProdutoListselfComponent } from './produto/produto-listself/produto-listself.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { LoadingInterceptor } from './_interceptors/loading.interceptor';
     VenderComponent,
     ProdutoDetailComponent,
     MemberEditComponent,
-    ProdutoEditComponent
+    ProdutoEditComponent,
+    ProdutoListselfComponent
   ],
   imports: [
     BrowserAnimationsModule,

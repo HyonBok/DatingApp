@@ -12,6 +12,7 @@ import { MessagesComponent } from './messages/messages.component';
 import { ProdutoDetailComponent } from './produto/produto-detail/produto-detail.component';
 import { ProdutoEditComponent } from './produto/produto-edit/produto-edit.component';
 import { ProdutoListComponent } from './produto/produto-list/produto-list.component';
+import { ProdutoListselfComponent } from './produto/produto-listself/produto-listself.component';
 import { VenderComponent } from './produto/vender/vender.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { PreventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
@@ -32,6 +33,7 @@ const routes: Routes = [
     ]
   },
   {path: 'produtos', component: ProdutoListComponent},
+  {path: 'produtos/vendendo', component: ProdutoListselfComponent},
   {path: 'produto/:nome', component: ProdutoDetailComponent},
   {path: 'errors', component: TestErrorComponent},
   {path: 'not-found', component: NotFoundComponent},

@@ -19,6 +19,7 @@
             <a class="dropdown-toggle text-light text-decoration-none" dropdownToggle>Bem-vindo {{user.username | titlecase}}!</a>
             <div class="dropdown-menu mt-3" *dropdownMenu>
                 <a class="dropdown-item" routerLink="/member/edit">Editar Perfil</a>
+                <a class="dropdown-item" routerLink="/produtos/vendendo">Meus Produtos</a>
                 <a class="dropdown-item" (click)="logout()">Logout</a>
             </div>
         </div>
