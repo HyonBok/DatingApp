@@ -14,13 +14,11 @@ namespace API.Controllers
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
-        public ProdutoController(DataContext context, IMapper mapper, IUserRepository userRepository)
+        public ProdutoController(DataContext context, IMapper mapper)
         {
             // Recebe o contexto do banco de dados
             _context = context;
             _mapper = mapper;
-            _userRepository = userRepository;
         }
 
         [HttpGet("{nome}")] // Get: api/produto/listar/{nome}
@@ -88,7 +86,19 @@ namespace API.Controllers
                 .Include(p => p.Produtos)
                 .SingleOrDefaultAsync(x => x.UserName.ToLower() == nome.ToLower());
 
-            return Ok(user.Produtos);
+            List<ProdutoDto> produtosDto = new List<ProdutoDto>();
+            for(int i = 0; i < user.Produtos.Count; i++){
+                var prodDto = new ProdutoDto{
+                    Nome = user.Produtos[i].Nome,
+                    Preco = user.Produtos[i].Preco,
+                    Foto = user.Produtos[i].Foto,
+                    Marca = user.Produtos[i].Marca,
+                    UnidadeVenda = user.Produtos[i].UnidadeVenda,
+                };
+                produtosDto.Add(prodDto);
+            }
+
+            return Ok(produtosDto);
         }
     }
 }

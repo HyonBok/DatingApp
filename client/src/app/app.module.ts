@@ -33,6 +33,8 @@ import { ProdutoEditComponent } from './produto/produto-edit/produto-edit.compon
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 import { ProdutoListselfComponent } from './produto/produto-listself/produto-listself.component';
+import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
+import { FileUploadModule } from 'ng2-file-upload';
 
 @NgModule({
   declarations: [
@@ -55,7 +57,8 @@ import { ProdutoListselfComponent } from './produto/produto-listself/produto-lis
     ProdutoDetailComponent,
     MemberEditComponent,
     ProdutoEditComponent,
-    ProdutoListselfComponent
+    ProdutoListselfComponent,
+    PhotoEditorComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -71,7 +74,8 @@ import { ProdutoListselfComponent } from './produto/produto-listself/produto-lis
     NgxGalleryModule,
     NgxSpinnerModule.forRoot({ 
       type: 'ball-beat' 
-    })
+    }),
+    FileUploadModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},

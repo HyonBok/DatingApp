@@ -17,9 +17,6 @@ export class ProdutoListselfComponent implements OnInit {
   produtos: Produto[] = [];
   
   user: User | null = null;
-  member: Member | undefined;
-
-  i: number = 0;
 
   constructor(private accountService: AccountService, private produtoService: ProdutoService,
     private memberService: MembersService, private toastr: ToastrService) {
@@ -29,21 +26,14 @@ export class ProdutoListselfComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.loadMember();
-
     this.loadProdutos();
   }
 
-  loadMember(){
-    if(!this.user) return;
-    this.memberService.getMember(this.user.username).subscribe({
-      next: member => this.member = member
-    })
-  }
-
   loadProdutos(){
-    if(!this.member) return;
-    this.produtoService.getProdutosByName(this.member.userName);
+    if(!this.user) return;
+    this.produtoService.getProdutosByName(this.user.username).subscribe({
+      next: produtos => this.produtos = produtos
+    })
   }
 }
 
