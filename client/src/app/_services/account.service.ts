@@ -37,6 +37,7 @@ export class AccountService {
 
   setCurrentUser(user: User){
     this.currentUserSource.next(user);
+    localStorage.setItem('user', JSON.stringify(user));
   }
 
   logout(){
