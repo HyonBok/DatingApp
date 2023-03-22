@@ -79,7 +79,7 @@ namespace API.Controllers
             return produtoDto;
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("listself/{nome}")]
         public async Task<ActionResult<IEnumerable<Produto>>> ListarProdutosUsuario(string nome){
             var user = await _context.Users
