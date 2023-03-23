@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit {
   constructor(private accountService: AccountService, private produtoService: ProdutoService) { }
 
   ngOnInit(): void {
-    this.carregarProdutos();
+    //this.carregarProdutos();
   }
 
   registerToggle(){
