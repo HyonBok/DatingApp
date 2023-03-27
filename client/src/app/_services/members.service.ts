@@ -47,10 +47,11 @@ export class MembersService {
   }
 
   getMembers(userParams: UserParams){
+    // Tenta pegar os parametros do usuário, e retorna caso exista.
     const response = this.memberCache.get(Object.values(userParams).join('-'));
-
     if(response) return of(response);
 
+    // Caso não exista, utiliza os parâmetros conforme demandado em 'userParams'
     let params = this.getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
 
     params = params.append('minAge', userParams.minAge);

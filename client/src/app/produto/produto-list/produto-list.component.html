@@ -1,6 +1,6 @@
 <div class="row">
     <h1>Produtos:</h1>
     <div class="col-2" *ngFor="let produto of produtos">
-        <app-produto-card [produto]="produto"></app-produto-card>
+        <app-produto-card (deleteClicked)="loadProdutos()" [produto]="produto" ></app-produto-card>
     </div>
 </div>

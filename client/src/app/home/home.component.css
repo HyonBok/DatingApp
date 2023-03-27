@@ -1,0 +1,6 @@
+h1 {
+    scale: 1.8;
+    color: #4555a5;
+    text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000,
+         0px 1px 0 #000, 0px -1px 0 #000, 1px 0px 0 #000, -1px 0px 0 #000;
+}

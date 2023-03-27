@@ -16,6 +16,10 @@ export class ProdutoService {
     return this.http.get<Produto[]>(this.baseUrl + '/listar');
   }
 
+  getProdutosOferta(){
+    return this.http.get<Produto[]>(this.baseUrl + '/listarOfertas');
+  }
+
   getProduto(nome: string){
     return this.http.get<Produto>(this.baseUrl + '/' + nome);
   }
@@ -26,5 +30,9 @@ export class ProdutoService {
 
   getProdutosByName(nome:string){
     return this.http.get<Produto[]>(this.baseUrl + '/listself/' + nome);
+  }
+
+  deleteProduto(id:number){
+    return this.http.delete(this.baseUrl + '/deletar/' + id);
   }
 }

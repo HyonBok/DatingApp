@@ -29,11 +29,11 @@ const routes: Routes = [
       {path: 'lists', component: ListsComponent},
       {path: 'messages', component: MessagesComponent},
       {path: 'produto/vender', component: VenderComponent},
-      {path: 'produto/:nome/editar', component: ProdutoEditComponent},
+      {path: 'produto/edit/:nome', component: ProdutoEditComponent},
+      {path: 'produtos/vendendo', component: ProdutoListselfComponent},
     ]
   },
   {path: 'produtos', component: ProdutoListComponent},
-  {path: 'produtos/vendendo', component: ProdutoListselfComponent},
   {path: 'produto/:nome', component: ProdutoDetailComponent},
   {path: 'errors', component: TestErrorComponent},
   {path: 'not-found', component: NotFoundComponent},

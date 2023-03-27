@@ -1,4 +1,3 @@
-import { Member } from "./member";
 export interface Produto {
     id: number;
     nome: string;
@@ -8,5 +7,5 @@ export interface Produto {
     descricao: string;
     unidadeVenda: string;
     foto: string;
-    userName: string;
+    usuario: string;
 }

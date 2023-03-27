@@ -10,6 +10,7 @@ import { User } from '../_models/user';
 export class AccountService {
   baseUrl = environment.apiUrl;
   private currentUserSource = new BehaviorSubject<User | null>(null);
+  // currentUser$ age como observable, no momento que recebe algum login/register seta o 'currentUserSource' e a variável no localStorage.
   currentUser$ = this.currentUserSource.asObservable();
 
   constructor(private http: HttpClient) { }
@@ -43,5 +44,6 @@ export class AccountService {
   logout(){
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
+    
   }
 }

@@ -11,8 +11,9 @@ namespace API.DTOs
         public float Preco { get; set; }
         public string Foto { get; set; }
         public string Marca { get; set; }
+        public string Sessao { get; set; }
         [Required]
         public string UnidadeVenda { get; set; }
-        public string UserName { get; set; }
+        public string Descricao { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { take } from 'rxjs';
 import { Produto } from 'src/app/_models/produto';
 import { ProdutoService } from 'src/app/_services/produto.service';
 
@@ -13,12 +14,18 @@ export class ProdutoListComponent implements OnInit {
   constructor(private produtoService: ProdutoService) { }
 
   ngOnInit(): void {
-    this.carregarProdutos();
+    this.loadProdutos();
   }
 
-  carregarProdutos(){
+  // Função para carregar os produtos, usar sempre que tiver lista de produtos e precisar de possiveis alterações (excluir, mudar página, etc).
+  loadProdutos(){
     this.produtoService.getProdutos().subscribe({
-      next: produtos => this.produtos = produtos
+      next: produtos => {
+        this.produtos = produtos
+      },
+      error: (error) => {
+        console.log(error);
+      }
     })
   }
 }

@@ -1,6 +1,7 @@
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Extensions;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -22,48 +23,51 @@ namespace API.Controllers
         }
 
         [HttpGet("{nome}")] // Get: api/produto/listar/{nome}
-        public async Task<ActionResult<ProdutoDto>> Produto(string nome){
-            var produto = await _context.Produtos
+        public async Task<ActionResult<ProdutoDto>> Produto(string nome)
+        {
+            var produtoDto = await _context.Produtos
                 .Where(x => x.Nome.ToLower() == nome.ToLower())
+                .ProjectTo<ProdutoDto>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
-
-            var produtoDto = new ProdutoDto
-            {
-                Nome = produto.Nome,
-                Preco = produto.Preco,
-                Foto = produto.Foto,
-                Marca = produto.Marca,
-                Descricao = produto.Descricao,
-                UnidadeVenda = produto.UnidadeVenda,
-            };
 
             return produtoDto;
         }
-             
 
         [HttpGet("listar")] // Get: api/produto/listar
-        public async Task<ActionResult<IEnumerable<ProdutoDto>>> ListarProdutos(){
-            var users = await _context.Produtos.ToListAsync();
-            
-            return Ok(users);
+        public async Task<ActionResult<IEnumerable<ProdutoDto>>> ListarProdutos()
+        {
+            var produtosDto = await _context.Produtos
+                .ProjectTo<ProdutoDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return Ok(produtosDto);
         }
+
+        // [HttpGet("listarOfertas")] 
+        // public async Task<ActionResult<IEnumerable<ProdutoDto>>> ListarProdutosOferta() {
+        //     var produtos = await _context.Produtos.Where().ToListAsync();
+        //     return Ok();
+        // }
 
         [Authorize]
         [HttpPost("registrar")] // Post: api/produto/registrar
-        public async Task<ActionResult<ProdutoDto>> RegistrarProduto(RegistrarProdutoDto registroProdutoDto){
+        public async Task<ActionResult<ProdutoDto>> RegistrarProduto(RegistrarProdutoDto registroProdutoDto)
+        {
+            var user = await _context.Users
+                .Where(x => x.UserName == User.GetUsername())
+                .FirstOrDefaultAsync();
+
             var produto = new Produto
             {
                 Nome = registroProdutoDto.Nome,
                 Preco = registroProdutoDto.Preco,
-                Foto = registroProdutoDto.Foto,
                 Marca = registroProdutoDto.Marca,
+                Sessao = registroProdutoDto.Sessao,
                 UnidadeVenda = registroProdutoDto.UnidadeVenda,
+                Descricao = registroProdutoDto.Descricao,
+                AppUser = user
             };
 
-            var user = await _context.Users
-                .SingleOrDefaultAsync(users => users.UserName == registroProdutoDto.UserName);
-            user.Produtos.Add(produto);
-            
             _context.Produtos.Add(produto);
             await _context.SaveChangesAsync();
 
@@ -71,34 +75,42 @@ namespace API.Controllers
             {
                 Nome = produto.Nome,
                 Preco = produto.Preco,
-                Foto = produto.Foto,
                 Marca = produto.Marca,
+                Sessao = produto.Sessao,
                 UnidadeVenda = produto.UnidadeVenda,
+                Descricao = produto.Descricao
             };
-            
+
             return produtoDto;
         }
 
         [Authorize]
         [HttpGet("listself/{nome}")]
-        public async Task<ActionResult<IEnumerable<Produto>>> ListarProdutosUsuario(string nome){
-            var user = await _context.Users
-                .Include(p => p.Produtos)
-                .SingleOrDefaultAsync(x => x.UserName.ToLower() == nome.ToLower());
-
-            List<ProdutoDto> produtosDto = new List<ProdutoDto>();
-            for(int i = 0; i < user.Produtos.Count; i++){
-                var prodDto = new ProdutoDto{
-                    Nome = user.Produtos[i].Nome,
-                    Preco = user.Produtos[i].Preco,
-                    Foto = user.Produtos[i].Foto,
-                    Marca = user.Produtos[i].Marca,
-                    UnidadeVenda = user.Produtos[i].UnidadeVenda,
-                };
-                produtosDto.Add(prodDto);
-            }
+        public async Task<ActionResult<IEnumerable<Produto>>> ListarProdutosUsuario(string nome)
+        {
+            var produtosDto = await _context.Produtos
+                .Where(p => p.AppUser.UserName.ToLower() == nome.ToLower())
+                .ProjectTo<ProdutoDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
 
             return Ok(produtosDto);
+        }
+
+        [Authorize]
+        [HttpDelete("deletar/{id}")]
+        public async Task<ActionResult> DeletarProduto(int id)
+        {
+            var produto = await _context.Produtos.FindAsync(id);
+
+            if (produto == null)
+            {
+                return NotFound("Produto não encontrado!"); // retorna código 404 caso não encontre o produto
+            }
+
+            _context.Produtos.Remove(produto);
+            await _context.SaveChangesAsync(); // salva as alterações
+
+            return NoContent();
         }
     }
 }

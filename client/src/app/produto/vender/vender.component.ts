@@ -38,7 +38,7 @@ export class VenderComponent implements OnInit {
   vender(){
     if(!this.produto) return;
     if(!this.member) return;
-    this.produto.userName = this.member.userName;
+    this.produto.usuario = this.member.userName;
     this.produtoService.registrarProduto(this.produto).subscribe({
       error: error => this.toastr.error(error.error)
     })

@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
@@ -13,11 +12,10 @@ namespace API.Controllers
     [Authorize]
     public class UsersController : BaseApiController
     {
-        
+
         private readonly IPhotoService _photoService;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-
         public UsersController(IUserRepository userRepository, IMapper mapper,
             IPhotoService photoService)
         {

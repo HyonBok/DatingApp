@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { take } from 'rxjs';
 import { Produto } from '../_models/produto';
 import { AccountService } from '../_services/account.service';
 import { ProdutoService } from '../_services/produto.service';
@@ -11,13 +12,27 @@ import { ProdutoService } from '../_services/produto.service';
 export class HomeComponent implements OnInit {
   registerMode = false;
   loginMode = false;
+  logado = false;
   users: any;
-  produtos: Produto[] = [];
+  produtosOferta: Produto[] = [];
 
   constructor(private accountService: AccountService, private produtoService: ProdutoService) { }
 
   ngOnInit(): void {
-    //this.carregarProdutos();
+    // Consegue saber se o usuário está logado atravess do 'currentUser$' do accountService
+    this.loadUser();
+
+    this.loadProdutos();
+  }
+
+  loadUser(){
+    this.accountService.currentUser$.pipe(take(1)).subscribe({
+      next: user => {
+        if(user) {
+          this.logado = true;
+        }
+      }
+    })
   }
 
   registerToggle(){
@@ -38,9 +53,9 @@ export class HomeComponent implements OnInit {
     this.loginMode = event;
   }
 
-  carregarProdutos(){
+  loadProdutos(){
     this.produtoService.getProdutos().subscribe({
-      next: produtos => this.produtos = produtos
+      next: produtosOferta => this.produtosOferta = produtosOferta
     })
   }
 }

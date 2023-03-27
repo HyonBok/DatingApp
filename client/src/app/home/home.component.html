@@ -1,21 +1,23 @@
-<div class="container mt-5">
+<div class="container" style="padding-top: 50px">
     <div *ngIf="!(registerMode || loginMode)">
         <div  style="text-align:center;">
             <h1>Mercado do zé</h1>
             <p class="lead">Os melhores preços para você economizar!</p>
             <div class="text-center">
-                <button (click)="loginToggle()" class="btn btn-primary btn-lg me-2">Logar</button>
-                <button (click)="registerToggle()" class="btn btn-primary btn-lg me-2">Registrar-se</button>
+                <button (click)="loginToggle()" class="btn btn-primary btn-lg me-2" *ngIf="!logado">Logar</button>
+                <button (click)="registerToggle()" class="btn btn-primary btn-lg me-2" *ngIf="!logado">Registrar-se</button>
                 <button class="btn btn-primary btn-info btn-lg me-2" routerLink="/produtos"
-                    routerLinkActive="active">Produtos</button>
+                    routerLinkActive="active" *ngIf="logado">Produtos</button>
+                <button class="btn btn-primary btn-info btn-lg me-2" routerLink="/produtos/vendendo"
+                    routerLinkActive="active"  *ngIf="logado">Meus produtos</button>
             </div>
         </div>
-        <hr style="margin: 50px 0px">
-        <div class="container">
-            <h2>Produtos em oferta!</h2>
+        <hr>
+        <div class="container" style="text-align:center;">
+            <h2 style="padding: 20px 0px">Produtos em oferta</h2>
             <div class="row">
-                <div class="col-3" *ngFor="let produto of produtos">
-                    <app-produto-card [produto]="produto"></app-produto-card>
+                <div class="col-3" *ngFor="let produto of produtosOferta">
+                    <app-produto-card (deleteClicked)="loadProdutos()" [produto]="produto"></app-produto-card>
                 </div>
             </div>
         </div>
