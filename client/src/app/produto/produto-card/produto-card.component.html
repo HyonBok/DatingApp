@@ -1,11 +1,11 @@
-<div class="card m-1">
+<div class="card m-1" *ngIf="produto">
     <div class="card-img-wrapper">
-        <a routerLink="/produto/{{produto?.nome}}">
-            <img src="{{produto?.foto || './assets/user.png'}}" alt="" class="card-img-top">
+        <a routerLink="/produto/{{produto.id}}">
+            <img src="{{produto.fotos[0] || './assets/produto.png'}}" alt="produto" class="card-img-top">
         </a>
         <ul *ngIf="perm" class="list-inline member-icons animate text-center">
             <li class="list-inline-item">
-                <button class="btn btn-primary" routerLink="/produto/edit/{{produto?.nome}}"><i class="fa fa-gear"></i></button>
+                <button class="btn btn-primary" routerLink="/produto/edit/{{produto.id}}"><i class="fa fa-gear"></i></button>
             </li>
             <li class="list-inline-item">
                 <button class="btn btn-danger" (click)="deleteProduto()"><i class="fa fa-trash"></i></button>
@@ -15,8 +15,8 @@
     <div class="card-body p-1">
         <h6 class="card-title text-center mb-1">
             <i class="fa fa-user me-2"></i>
-            {{produto?.nome}} {{produto?.marca}}
+            {{produto.nome}} {{produto.marca}}
         </h6>
-        <p class="card-text text-muted text-center">R${{produto?.preco}}</p>
+        <p class="card-text text-muted text-center">R${{produto.preco}}</p>
     </div>
 </div>

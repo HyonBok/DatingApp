@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs';
 import { Member } from 'src/app/_models/member';
@@ -18,7 +19,7 @@ export class VenderComponent implements OnInit {
   member: Member | undefined;
 
   constructor(private accountService: AccountService, private produtoService: ProdutoService, 
-    private memberService: MembersService, private toastr: ToastrService) { 
+    private memberService: MembersService, private toastr: ToastrService, private router: Router) { 
       this.accountService.currentUser$.pipe(take(1)).subscribe({
         next: user => this.user = user
       })
@@ -40,6 +41,9 @@ export class VenderComponent implements OnInit {
     if(!this.member) return;
     this.produto.usuario = this.member.userName;
     this.produtoService.registrarProduto(this.produto).subscribe({
+      next: p => {
+        this.router.navigateByUrl('/produto/edit/' + p.id)
+      },
       error: error => this.toastr.error(error.error)
     })
   }

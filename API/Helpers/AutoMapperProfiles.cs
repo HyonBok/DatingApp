@@ -21,6 +21,7 @@ namespace API.Helpers
                     (src => src.Fotos.FirstOrDefault().Url))
                 .ForMember(dest => dest.Usuario, opt => opt.MapFrom
                     (src => src.AppUser.UserName));
+            CreateMap<ProdutoDto, Produto>();
             CreateMap<RegisterDto, AppUser>();
         }
     }

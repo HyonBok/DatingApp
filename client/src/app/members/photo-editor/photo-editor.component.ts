@@ -30,7 +30,7 @@ export class PhotoEditorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initialzeUploader();
+    this.initializeUploader();
   }
 
   fileOverBase(e: any){
@@ -63,7 +63,7 @@ export class PhotoEditorComponent implements OnInit {
     })
   }
 
-  initialzeUploader(){
+  initializeUploader(){
     this.uploader = new FileUploader({
       url: this.baseUrl + 'users/add-photo',
       authToken: 'Bearer ' + this.user?.token,

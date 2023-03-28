@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Produto } from '../_models/produto';
-import { MembersService } from './members.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProdutoService {
   baseUrl = environment.apiUrl + 'produto';
+  produtos: Produto[] = []
 
   constructor(private http: HttpClient) { }
 
@@ -20,8 +21,8 @@ export class ProdutoService {
     return this.http.get<Produto[]>(this.baseUrl + '/listarOfertas');
   }
 
-  getProduto(nome: string){
-    return this.http.get<Produto>(this.baseUrl + '/' + nome);
+  getProduto(id: string){
+    return this.http.get<Produto>(this.baseUrl + '/' + id);
   }
 
   registrarProduto(produto: Produto){
@@ -34,5 +35,14 @@ export class ProdutoService {
 
   deleteProduto(id:number){
     return this.http.delete(this.baseUrl + '/deletar/' + id);
+  }
+
+  updateProduto(produto: Produto) {
+    return this.http.put(this.baseUrl + '/atualizar', produto).pipe(
+      map(() => {
+        const index = this.produtos.indexOf(produto);
+        this.produtos[index] = {...this.produtos[index], ...produto}
+      })
+    )
   }
 }

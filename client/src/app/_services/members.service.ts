@@ -54,6 +54,7 @@ export class MembersService {
     // Caso não exista, utiliza os parâmetros conforme demandado em 'userParams'
     let params = this.getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
 
+    // Filtro.
     params = params.append('minAge', userParams.minAge);
     params = params.append('maxAge', userParams.maxAge);
     params = params.append('gender', userParams.gender);

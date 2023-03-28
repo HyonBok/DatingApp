@@ -3,6 +3,7 @@ using API.DTOs;
 using API.Entities;
 using API.Extensions;
 using API.Interfaces;
+using API.Services;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
@@ -15,18 +16,21 @@ namespace API.Controllers
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        public ProdutoController(DataContext context, IMapper mapper)
+        private readonly IPhotoService _photoService;
+        public ProdutoController(DataContext context, IMapper mapper,
+            IPhotoService photoService)
         {
+            _photoService = photoService;
             // Recebe o contexto do banco de dados
             _context = context;
             _mapper = mapper;
         }
 
-        [HttpGet("{nome}")] // Get: api/produto/listar/{nome}
-        public async Task<ActionResult<ProdutoDto>> Produto(string nome)
+        [HttpGet("{id}")] // Get: api/produto/{id}
+        public async Task<ActionResult<ProdutoDto>> Produto(int id)
         {
             var produtoDto = await _context.Produtos
-                .Where(x => x.Nome.ToLower() == nome.ToLower())
+                .Where(x => x.Id == id)
                 .ProjectTo<ProdutoDto>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
 
@@ -62,9 +66,7 @@ namespace API.Controllers
                 Nome = registroProdutoDto.Nome,
                 Preco = registroProdutoDto.Preco,
                 Marca = registroProdutoDto.Marca,
-                Sessao = registroProdutoDto.Sessao,
                 UnidadeVenda = registroProdutoDto.UnidadeVenda,
-                Descricao = registroProdutoDto.Descricao,
                 AppUser = user
             };
 
@@ -73,12 +75,12 @@ namespace API.Controllers
 
             var produtoDto = new ProdutoDto
             {
+                Id = produto.Id,
                 Nome = produto.Nome,
                 Preco = produto.Preco,
                 Marca = produto.Marca,
-                Sessao = produto.Sessao,
                 UnidadeVenda = produto.UnidadeVenda,
-                Descricao = produto.Descricao
+                Sessao = produto.Sessao
             };
 
             return produtoDto;
@@ -112,5 +114,73 @@ namespace API.Controllers
 
             return NoContent();
         }
+
+        [Authorize]
+        [HttpPut("atualizar")]
+        public async Task<ActionResult> AtualizarProduto(ProdutoDto produtoDto) {
+            var produto = await _context.Produtos
+                .Where(x => x.Id == produtoDto.Id)
+                .SingleOrDefaultAsync();
+
+            if(produto == null) return NotFound();
+
+            _mapper.Map(produtoDto, produto);
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPost("add-foto/{id}")]
+        public async Task<ActionResult<PhotoDto>> AdicionarFoto(IFormFile file, int id)
+        {
+            var produto = await _context.Produtos
+                .Where(x => x.Id == id)
+                .SingleOrDefaultAsync();
+
+            if(produto == null) return NotFound();
+
+            var result = await _photoService.AddPhotoAsync(file);
+
+            if(result.Error != null) return BadRequest(result.Error.Message);
+
+            var foto = new Photo
+            {
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId = result.PublicId,
+            };
+
+            produto.Fotos.Add(foto);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        // [Authorize]
+        // [HttpDelete("delete-photo/{photoId}")]
+        // public async Task<ActionResult> DeletePhoto(int photoId) 
+        // {
+        //     var user = await _userRepository .GetUserByUsernameAsync(User.GetUsername());
+
+        //     var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+
+        //     if(photo == null) return NotFound();
+
+        //     if(photo.IsMain) return BadRequest("Você não pode deletar sua foto principal!");
+
+        //     if(photo.PublicId != null)
+        //     {
+        //         var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+        //         if (result.Error != null) return BadRequest(result.Error.Message);
+        //     }
+
+        //     user.Photos.Remove(photo);
+
+        //     if(await _userRepository.SaveAllAsync()) return Ok();
+
+        //     return BadRequest("Problema ao tentar deletar imagem!");
+        // }
     }
 }

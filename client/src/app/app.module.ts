@@ -41,6 +41,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { TimeagoModule } from 'ngx-timeago';
+// import { FotoEditorComponent } from './produto/foto-editor/foto-editor.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { TimeagoModule } from 'ngx-timeago';
     ProdutoListselfComponent,
     PhotoEditorComponent,
     TextInputComponent,
-    DatePickerComponent
+    DatePickerComponent,
+    // FotoEditorComponent
   ],
   imports: [
     BrowserAnimationsModule,
