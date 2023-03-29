@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxGalleryImage, NgxGalleryOptions, NgxGalleryAnimation } from '@kolkov/ngx-gallery';
 import { ToastrService } from 'ngx-toastr';
 import { Produto } from 'src/app/_models/produto';
@@ -16,7 +16,7 @@ export class ProdutoDetailComponent implements OnInit {
   galleryImage: NgxGalleryImage | undefined;
 
   constructor(private produtoService: ProdutoService, private route: ActivatedRoute,
-    private toastr: ToastrService, router) { }
+    private toastr: ToastrService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadProduto();

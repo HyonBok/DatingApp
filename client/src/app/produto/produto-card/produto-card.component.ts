@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs';
-import { Member } from 'src/app/_models/member';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { MembersService } from 'src/app/_services/members.service';
@@ -17,7 +16,6 @@ export class ProdutoCardComponent implements OnInit {
   @Output() deleteClicked = new EventEmitter<void>();
   @Input() produto: Produto | undefined;
   user: User | undefined;
-  member: Member | undefined;
   perm = false;
 
   constructor(private accountService: AccountService, private toastr: ToastrService,
@@ -31,16 +29,7 @@ export class ProdutoCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadMember();
-
     this.Permissao();
-  }
-
-  loadMember() {
-    if(!this.user) return
-    this.memberService.getMember(this.user.username).subscribe({
-      next: member => this.member = member
-    })
   }
 
   Permissao() {

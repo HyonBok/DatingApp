@@ -1,18 +1,17 @@
-<!-- <p>foto-editor works!</p>
-<div class="row mb-3" *ngIf="member">
-    <div class="col-2" *ngFor="let photo of member.photos">
-        <img src="{{photo.url}}" alt="photo of user" class="img-thumbnail mb-1">
+<div class="row mb-3" *ngIf="produto">
+    <div class="col-2" *ngFor="let foto of produto.fotos">
+        <img src="{{foto.url}}" alt="foto of user" class="img-thumbnail mb-1">
         <div class="tex-center">
             <button 
                 class="btn btn-sm"
-                [disabled]="photo.isMain"
-                (click)="setMainPhoto(photo)"
-                [ngClass]="photo.isMain ? 'btn-success active' : 'btn-outline-success'"
+                [disabled]="foto.isMain"
+                (click)="setFoto(foto)"
+                [ngClass]="foto.isMain ? 'btn-success active' : 'btn-outline-success'"
             >Main</button>
             <button 
                 class="btn btn-sm btn-danger"
-                [disabled]="photo.isMain"
-                (click)="deletePhoto(photo.id)"
+                [disabled]="foto.isMain"
+                (click)="deletarFoto(foto.id)"
             ><i class="fa fa-trash"></i></button>
         </div>
     </div>
@@ -83,4 +82,4 @@
 
     </div>
 
-</div> -->
+</div>

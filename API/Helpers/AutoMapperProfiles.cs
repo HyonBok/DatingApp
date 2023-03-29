@@ -15,12 +15,15 @@ namespace API.Helpers
                 .ForMember(dest => dest.Age, opt => opt.MapFrom
                     (src => src.DateOfBirth.CalculateAge()));
             CreateMap<Photo, PhotoDto>();
+            CreateMap<Foto, FotoDto>();
             CreateMap<MemberUpdateDto, AppUser>();
             CreateMap<Produto, ProdutoDto>()
                 .ForMember(dest => dest.FotoUrl, opt => opt.MapFrom
-                    (src => src.Fotos.FirstOrDefault().Url))
+                    (src => src.Fotos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Usuario, opt => opt.MapFrom
-                    (src => src.AppUser.UserName));
+                    (src => src.AppUser.UserName))
+                .ForMember(dest => dest.PrecoDesconto, opt => opt.MapFrom
+                    (src => (float)((int)(src.Preco * (100-src.Desconto)) * 100)/10000));
             CreateMap<ProdutoDto, Produto>();
             CreateMap<RegisterDto, AppUser>();
         }

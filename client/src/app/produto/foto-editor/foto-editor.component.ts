@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { take } from 'rxjs';
 import { Produto } from 'src/app/_models/produto';
+import { Foto } from 'src/app/_models/foto';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { ProdutoService } from 'src/app/_services/produto.service';
@@ -36,19 +37,35 @@ export class FotoEditorComponent implements OnInit {
     this.hasBaseDropZoneOver = e;
   }
 
-//   deletePhoto(photoId: number){
-//     this.produtoService.deleteFoto(photoId).subscribe({
-//       next: () => {
-//         if(this.produto){
-//           this.produto.foto = this.produto.photos.filter(x => x.id != photoId);
-//         }
-//       }
-//     })
-//   }
+  setFoto(foto: Foto) {
+    if(!this.produto) return;
+    this.produtoService.setFoto(this.produto.id, foto.id).subscribe({
+      next: () => {
+        if(this.produto) {
+          this.produto.fotoUrl = foto.url;
+          this.produto.fotos.forEach(p => {
+            if(p.isMain) p.isMain = false;
+            if(p.id == foto.id) p.isMain = true;
+          })
+        }
+      }
+    })
+  }
+
+  deletarFoto(fotoId: number){
+    if(!this.produto) return;
+    this.produtoService.deletarFoto(this.produto.id, fotoId).subscribe({
+      next: () => {
+        if(this.produto){
+          this.produto.fotos = this.produto.fotos.filter(x => x.id != fotoId);
+        }
+      }
+    })
+  }
 
   initializeUploader(){
     this.uploader = new FileUploader({
-      url: this.baseUrl + 'users/add-photo',
+      url: this.baseUrl + 'produto/add-foto/' + this.produto?.id,
       authToken: 'Bearer ' + this.user?.token,
       isHTML5: true,
       allowedFileType: ['image'],
@@ -61,16 +78,16 @@ export class FotoEditorComponent implements OnInit {
       file.withCredentials = false;
     }
 
-    // this.uploader.onSuccessItem = (item, response, status, headers) => {
-    //   if(response) {
-    //     const photo = JSON.parse(response);
-    //     this.produto?.photos.push(photo)
-    //     if(photo.isMain && this.user && this.produto){
-    //       this.user.photoUrl = photo.url;
-    //       this.produto.photoUrl = photo.url;
-    //       this.accountService.setCurrentUser(this.user);
-    //     }
-    //   }
-    // }
+    this.uploader.onSuccessItem = (item, response, status, headers) => {
+      if(response) {
+        const foto = JSON.parse(response);
+        if(!this.produto) return;
+        this.produto.fotos.push(foto)
+        if(foto.isMain && this.user){
+          this.produto.fotos = foto.url;
+          this.accountService.setCurrentUser(this.user);
+        }
+      }
+    }
   }
 }

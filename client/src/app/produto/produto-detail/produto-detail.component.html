@@ -1,13 +1,16 @@
 <div class="row" *ngIf="produto">
     <div class="col-3 margin-left">
         <div class="card card-body">
-            <img src="{{produto.fotos[0] || './assets/produto.png'}}" class="card-img-top img-thumbnail">
+            <carousel>
+                <slide *ngFor="let foto of produto.fotos">
+                  <img src="{{foto.url}}" alt="first slide" style="display: block; width: 100%;">
+                </slide>
+            </carousel>
             <div class="card-footer">
                 <div class="btn-group d-flex">
                     <div>
                         <button class="btn btn-primary">Comprar</button>
                         <button class="btn btn-success">Carrinho</button>
-                        <button class="btn"><i class="fa fa-cog"></i></button>
                     </div>
                 </div>
             </div>
@@ -19,7 +22,12 @@
         <tabset class="member-tabset">
             <tab heading="Produto">
                 <h4>Preço:</h4>
-                <p>R$: {{produto.preco}} - {{produto.unidadeVenda}}</p>
+                <p *ngIf="produto.preco == produto.precoDesconto">
+                    R${{produto.preco}}</p>
+                <div class="list-inline" *ngIf="produto.preco != produto.precoDesconto">
+                    <p class="list-inline-item" style="text-decoration:line-through">R${{produto.preco}}</p>
+                    <p class="list-inline-item">- R${{produto.precoDesconto}}</p>
+                </div>
             </tab>
             <tab heading="Descricao">
                 <h4>Descricao</h4>

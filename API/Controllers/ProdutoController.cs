@@ -47,11 +47,15 @@ namespace API.Controllers
             return Ok(produtosDto);
         }
 
-        // [HttpGet("listarOfertas")] 
-        // public async Task<ActionResult<IEnumerable<ProdutoDto>>> ListarProdutosOferta() {
-        //     var produtos = await _context.Produtos.Where().ToListAsync();
-        //     return Ok();
-        // }
+        [HttpGet("listar-ofertas")] 
+        public async Task<ActionResult<IEnumerable<ProdutoDto>>> ListarProdutosOferta() {
+            var produtos = await _context.Produtos
+                .Where(p => p.Desconto != 0)
+                .ProjectTo<ProdutoDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return Ok(produtos);
+        }
 
         [Authorize]
         [HttpPost("registrar")] // Post: api/produto/registrar
@@ -78,6 +82,7 @@ namespace API.Controllers
                 Id = produto.Id,
                 Nome = produto.Nome,
                 Preco = produto.Preco,
+                PrecoDesconto = produto.Preco,
                 Marca = produto.Marca,
                 UnidadeVenda = produto.UnidadeVenda,
                 Sessao = produto.Sessao
@@ -133,10 +138,12 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost("add-foto/{id}")]
-        public async Task<ActionResult<PhotoDto>> AdicionarFoto(IFormFile file, int id)
+        public async Task<ActionResult<FotoDto>> AdicionarFoto(IFormFile file, int id)
         {
+            
             var produto = await _context.Produtos
                 .Where(x => x.Id == id)
+                .Include(p => p.Fotos)
                 .SingleOrDefaultAsync();
 
             if(produto == null) return NotFound();
@@ -145,11 +152,13 @@ namespace API.Controllers
 
             if(result.Error != null) return BadRequest(result.Error.Message);
 
-            var foto = new Photo
+            var foto = new Foto
             {
                 Url = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId,
             };
+
+            if(produto.Fotos.Count == 0) foto.IsMain = true;
 
             produto.Fotos.Add(foto);
 
@@ -158,29 +167,55 @@ namespace API.Controllers
             return Ok();
         }
 
-        // [Authorize]
-        // [HttpDelete("delete-photo/{photoId}")]
-        // public async Task<ActionResult> DeletePhoto(int photoId) 
-        // {
-        //     var user = await _userRepository .GetUserByUsernameAsync(User.GetUsername());
+        [Authorize]
+        [HttpDelete("deletar-foto/{id}/{fotoId}")]
+        public async Task<ActionResult> DeletarFoto(int id, int fotoId) 
+        {
+            var produto = await _context.Produtos
+                .Where(x => x.Id == id)
+                .Include(p => p.Fotos)
+                .SingleOrDefaultAsync();
 
-        //     var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+            var foto = produto.Fotos.FirstOrDefault(x => x.Id == fotoId);
 
-        //     if(photo == null) return NotFound();
+            if(foto == null) return NotFound();
 
-        //     if(photo.IsMain) return BadRequest("Você não pode deletar sua foto principal!");
+            if(foto.PublicId != null)
+            {
+                var result = await _photoService.DeletePhotoAsync(foto.PublicId);
+                if (result.Error != null) return BadRequest(result.Error.Message);
+            }
 
-        //     if(photo.PublicId != null)
-        //     {
-        //         var result = await _photoService.DeletePhotoAsync(photo.PublicId);
-        //         if (result.Error != null) return BadRequest(result.Error.Message);
-        //     }
+            produto.Fotos.Remove(foto);
 
-        //     user.Photos.Remove(photo);
+            await _context.SaveChangesAsync();
 
-        //     if(await _userRepository.SaveAllAsync()) return Ok();
+            return Ok();
+        }
 
-        //     return BadRequest("Problema ao tentar deletar imagem!");
-        // }
+        [HttpPut("set-foto/{id}/{fotoId}")]
+        public async Task<ActionResult> SetMainPhoto(int id, int fotoId)
+        {
+            var produto = await _context.Produtos
+                .Where(x => x.Id == id)
+                .Include(p => p.Fotos)
+                .SingleOrDefaultAsync();
+
+            if(produto == null) return NotFound();
+
+            var foto = produto.Fotos.FirstOrDefault(x => x.Id == fotoId);
+
+            if(foto == null) return NotFound();
+
+            if(foto.IsMain) return BadRequest("Esta já sua foto principal!");
+
+            var currentMain = produto.Fotos.FirstOrDefault(x => x.IsMain);
+            if(currentMain != null) currentMain.IsMain = false;
+            foto.IsMain = true;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }

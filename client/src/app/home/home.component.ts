@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit {
   }
 
   loadProdutos(){
-    this.produtoService.getProdutos().subscribe({
+    this.produtoService.getProdutosOferta().subscribe({
       next: produtosOferta => this.produtosOferta = produtosOferta
     })
   }

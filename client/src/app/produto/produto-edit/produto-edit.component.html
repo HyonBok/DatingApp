@@ -9,7 +9,7 @@
     </div>
     <div class="col-4">
         <div class="card" style="width: 400px">
-            <img src="{{produto.fotos[0] || './assets/produto.png'}}" alt="{{produto.nome}} {{produto.marca}}"
+            <img src="{{produto.fotoUrl || './assets/produto.png'}}" alt="{{produto.nome}} {{produto.marca}}"
                 class="card-img-top img-thumbnail">
             <div class="card-body">
                 <div>
@@ -18,7 +18,12 @@
                 </div>
                 <div>
                     <strong>Preço:</strong>
-                    <p>R$ {{produto.preco}}</p>
+                    <p *ngIf="produto.preco == produto.precoDesconto">
+                        R${{produto.preco}}</p>
+                    <div class="list-inline" *ngIf="produto.preco != produto.precoDesconto">
+                        <p class="list-inline-item" style="text-decoration:line-through">R${{produto.preco}}</p>
+                        <p class="list-inline-item">- R${{produto.precoDesconto}}</p>
+                    </div>
                 </div>
                 <div>
                     <strong>Sessão:</strong>
@@ -66,7 +71,7 @@
                 </form>
             </tab>
             <tab heading="Editar fotos">
-                <!-- <app-foto-editor [produto]="produto"></app-foto-editor> -->
+                <app-foto-editor [produto]="produto"></app-foto-editor>
             </tab>
         </tabset>
     </div>

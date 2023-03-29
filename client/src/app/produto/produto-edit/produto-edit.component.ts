@@ -63,15 +63,20 @@ export class ProdutoEditComponent implements OnInit {
 
 
   updateProduto() {
+    // Valores padrao do produto
     this.editForm?.form.addControl('id', new FormControl(''));
     this.editForm?.controls['id'].setValue(this.produto?.id);
+    this.editForm?.form.addControl('nome', new FormControl(''));
+    this.editForm?.controls['nome'].setValue(this.produto?.nome);
+    this.editForm?.form.addControl('marca', new FormControl(''));
+    this.editForm?.controls['marca'].setValue(this.produto?.marca);
+    this.editForm?.form.addControl('unidadeVenda', new FormControl(''));
+    this.editForm?.controls['unidadeVenda'].setValue(this.produto?.unidadeVenda);
+    
     this.produtoService.updateProduto(this.editForm?.value).subscribe({
       next: _ => {
         this.toastr.success('Produto atualizado');
         this.editForm?.reset(this.produto);
-      },
-      error: _ => {
-        console.log("a");
       }
     })
   }

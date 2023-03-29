@@ -12,6 +12,6 @@ namespace API.Entities
         public string FotoUrl { get; set; }
         public string Sessao { get; set; } = "Geral";
         public AppUser AppUser { get; set; }
-        public List<Photo> Fotos { get; set; } = new();
+        public List<Foto> Fotos { get; set; } = new();
     }
 }

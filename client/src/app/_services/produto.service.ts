@@ -18,7 +18,7 @@ export class ProdutoService {
   }
 
   getProdutosOferta(){
-    return this.http.get<Produto[]>(this.baseUrl + '/listarOfertas');
+    return this.http.get<Produto[]>(this.baseUrl + '/listar-ofertas');
   }
 
   getProduto(id: string){
@@ -44,5 +44,13 @@ export class ProdutoService {
         this.produtos[index] = {...this.produtos[index], ...produto}
       })
     )
+  }
+
+  deletarFoto(id: number, fotoId: number){
+    return this.http.delete(this.baseUrl + '/deletar-foto/' + id + "/" + fotoId);
+  }
+
+  setFoto(id: number, fotoId: number) {
+    return this.http.put(this.baseUrl + '/set-foto/' + id + "/" + fotoId, {});
   }
 }
