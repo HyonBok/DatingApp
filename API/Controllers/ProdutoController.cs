@@ -14,25 +14,24 @@ namespace API.Controllers
 {
     public class ProdutoController : BaseApiController
     {
-        private readonly DataContext _context;
+        private readonly IProdutoRepository _produtoRepository;
         private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
-        public ProdutoController(DataContext context, IMapper mapper,
-            IPhotoService photoService)
+        private readonly IUserRepository _userRepository;
+        public ProdutoController(IProdutoRepository produtoRepository, IMapper mapper,
+            IPhotoService photoService, IUserRepository userRepository)
         {
+            _userRepository = userRepository;
             _photoService = photoService;
             // Recebe o contexto do banco de dados
-            _context = context;
+            _produtoRepository = produtoRepository;
             _mapper = mapper;
         }
 
         [HttpGet("{id}")] // Get: api/produto/{id}
         public async Task<ActionResult<ProdutoDto>> Produto(int id)
         {
-            var produtoDto = await _context.Produtos
-                .Where(x => x.Id == id)
-                .ProjectTo<ProdutoDto>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
+            var produtoDto = await _produtoRepository.GetProdutoDtoByIdAsync(id);
 
             return produtoDto;
         }
@@ -40,30 +39,23 @@ namespace API.Controllers
         [HttpGet("listar")] // Get: api/produto/listar
         public async Task<ActionResult<IEnumerable<ProdutoDto>>> ListarProdutos()
         {
-            var produtosDto = await _context.Produtos
-                .ProjectTo<ProdutoDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            var produtosDto = await _produtoRepository.GetProdutosAsync();
 
             return Ok(produtosDto);
         }
 
         [HttpGet("listar-ofertas")] 
         public async Task<ActionResult<IEnumerable<ProdutoDto>>> ListarProdutosOferta() {
-            var produtos = await _context.Produtos
-                .Where(p => p.Desconto != 0)
-                .ProjectTo<ProdutoDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            var produtosDto = await _produtoRepository.GetProdutosOfertaAsync();
 
-            return Ok(produtos);
+            return Ok(produtosDto);
         }
 
         [Authorize]
         [HttpPost("registrar")] // Post: api/produto/registrar
         public async Task<ActionResult<ProdutoDto>> RegistrarProduto(RegistrarProdutoDto registroProdutoDto)
         {
-            var user = await _context.Users
-                .Where(x => x.UserName == User.GetUsername())
-                .FirstOrDefaultAsync();
+            var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
 
             var produto = new Produto
             {
@@ -74,8 +66,7 @@ namespace API.Controllers
                 AppUser = user
             };
 
-            _context.Produtos.Add(produto);
-            await _context.SaveChangesAsync();
+            await _produtoRepository.SaveAllAsync();
 
             var produtoDto = new ProdutoDto
             {
@@ -95,10 +86,7 @@ namespace API.Controllers
         [HttpGet("listself/{nome}")]
         public async Task<ActionResult<IEnumerable<Produto>>> ListarProdutosUsuario(string nome)
         {
-            var produtosDto = await _context.Produtos
-                .Where(p => p.AppUser.UserName.ToLower() == nome.ToLower())
-                .ProjectTo<ProdutoDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            var produtosDto = await _produtoRepository.GetProdutoByUserAsync(nome);
 
             return Ok(produtosDto);
         }
@@ -107,15 +95,15 @@ namespace API.Controllers
         [HttpDelete("deletar/{id}")]
         public async Task<ActionResult> DeletarProduto(int id)
         {
-            var produto = await _context.Produtos.FindAsync(id);
+            var produto = await _produtoRepository.GetProdutoByIdAsync(id);
 
             if (produto == null)
             {
                 return NotFound("Produto não encontrado!"); // retorna código 404 caso não encontre o produto
             }
 
-            _context.Produtos.Remove(produto);
-            await _context.SaveChangesAsync(); // salva as alterações
+            _produtoRepository.DeleteProduto(produto);
+            await _produtoRepository.SaveAllAsync(); // salva as alterações
 
             return NoContent();
         }
@@ -123,15 +111,12 @@ namespace API.Controllers
         [Authorize]
         [HttpPut("atualizar")]
         public async Task<ActionResult> AtualizarProduto(ProdutoDto produtoDto) {
-            var produto = await _context.Produtos
-                .Where(x => x.Id == produtoDto.Id)
-                .SingleOrDefaultAsync();
+            var produto = await _produtoRepository.GetProdutoByIdAsync(produtoDto.Id);
 
             if(produto == null) return NotFound();
 
             _mapper.Map(produtoDto, produto);
-
-            await _context.SaveChangesAsync();
+            await _produtoRepository.SaveAllAsync();
 
             return NoContent();
         }
@@ -140,11 +125,7 @@ namespace API.Controllers
         [HttpPost("add-foto/{id}")]
         public async Task<ActionResult<FotoDto>> AdicionarFoto(IFormFile file, int id)
         {
-            
-            var produto = await _context.Produtos
-                .Where(x => x.Id == id)
-                .Include(p => p.Fotos)
-                .SingleOrDefaultAsync();
+            var produto = await _produtoRepository.GetProdutoByIdAsync(id);
 
             if(produto == null) return NotFound();
 
@@ -161,8 +142,7 @@ namespace API.Controllers
             if(produto.Fotos.Count == 0) foto.IsMain = true;
 
             produto.Fotos.Add(foto);
-
-            await _context.SaveChangesAsync();
+            await _produtoRepository.SaveAllAsync();
 
             return Ok();
         }
@@ -171,10 +151,7 @@ namespace API.Controllers
         [HttpDelete("deletar-foto/{id}/{fotoId}")]
         public async Task<ActionResult> DeletarFoto(int id, int fotoId) 
         {
-            var produto = await _context.Produtos
-                .Where(x => x.Id == id)
-                .Include(p => p.Fotos)
-                .SingleOrDefaultAsync();
+            var produto = await _produtoRepository.GetProdutoByIdAsync(id);
 
             var foto = produto.Fotos.FirstOrDefault(x => x.Id == fotoId);
 
@@ -188,7 +165,7 @@ namespace API.Controllers
 
             produto.Fotos.Remove(foto);
 
-            await _context.SaveChangesAsync();
+            await _produtoRepository.SaveAllAsync();
 
             return Ok();
         }
@@ -196,10 +173,7 @@ namespace API.Controllers
         [HttpPut("set-foto/{id}/{fotoId}")]
         public async Task<ActionResult> SetMainPhoto(int id, int fotoId)
         {
-            var produto = await _context.Produtos
-                .Where(x => x.Id == id)
-                .Include(p => p.Fotos)
-                .SingleOrDefaultAsync();
+            var produto = await _produtoRepository.GetProdutoByIdAsync(id);
 
             if(produto == null) return NotFound();
 
@@ -207,13 +181,13 @@ namespace API.Controllers
 
             if(foto == null) return NotFound();
 
-            if(foto.IsMain) return BadRequest("Esta já sua foto principal!");
+            if(foto.IsMain) return BadRequest("Esta já é sua foto principal!");
 
             var currentMain = produto.Fotos.FirstOrDefault(x => x.IsMain);
             if(currentMain != null) currentMain.IsMain = false;
             foto.IsMain = true;
 
-            await _context.SaveChangesAsync();
+            await _produtoRepository.SaveAllAsync();
 
             return NoContent();
         }

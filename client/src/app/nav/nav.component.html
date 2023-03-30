@@ -7,21 +7,26 @@
                     <a class="nav-link" routerLink="/produtos" routerLinkActive="active">Produtos</a>
                 </li>
                 <li class="nav-item" *ngIf="accountService.currentUser$ | async">
-                    <a class="nav-link" routerLink="/produto/vender" routerLinkActive="active">Vender produto</a>
+                    <a class="nav-link" routerLink="/produto/vender" 
+                        [routerLinkActiveOptions]="{exact: true}"
+                        routerLinkActive="active">Vender produto</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/members" routerLinkActive="active">Matches</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/lists" routerLinkActive="active">Listas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/messages" routerLinkActive="active">Mensagens</a>
                 </li>
             </ng-container>
-            <!-- Para testar erros
-            <li class="nav-item">
-                <a class="nav-link" routerLink="/errors" routerLinkActive="active">Erros</a>
-            </li> -->
-            <li class="nav-item">
-                <a class="nav-link" routerLink="/lists" routerLinkActive="active">Listas</a>
-            </li>
         </ul>
 
         <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
             <img src="{{user.photoUrl || './assets/user.png'}}" alt="user photo">
-            <a class="dropdown-toggle text-light text-decoration-none ms-2" dropdownToggle>Bem-vindo {{user.knownAs | titlecase}}!</a>
+            <a class="dropdown-toggle text-light text-decoration-none ms-2" dropdownToggle>Bem-vindo {{user.knownAs |
+                titlecase}}!</a>
             <div class="dropdown-menu mt-3" *dropdownMenu>
                 <a class="dropdown-item" routerLink="/member/edit">Editar Perfil</a>
                 <a class="dropdown-item" routerLink="/produtos/vendendo">Meus Produtos</a>
@@ -29,18 +34,11 @@
             </div>
         </div>
 
-        <form *ngIf="!(accountService.currentUser$ | async)" #loginForm="ngForm" class="d-flex" (ngSubmit)="login()" autocomplete="off">
-            <input 
-                name="username"
-                [(ngModel)]="model.username"
-                class="form-control me-2" 
-                type="text" 
+        <form *ngIf="!(accountService.currentUser$ | async)" #loginForm="ngForm" class="d-flex" (ngSubmit)="login()"
+            autocomplete="off">
+            <input name="username" [(ngModel)]="model.username" class="form-control me-2" type="text"
                 placeholder="Usuario">
-            <input 
-                name="password"
-                [(ngModel)]="model.password"
-                class="form-control me-2" 
-                type="password" 
+            <input name="password" [(ngModel)]="model.password" class="form-control me-2" type="password"
                 placeholder="Senha">
             <button class="btn btn-success" type="submit">Login</button>
         </form>

@@ -26,6 +26,11 @@ namespace API.Helpers
                     (src => (float)((int)(src.Preco * (100-src.Desconto)) * 100)/10000));
             CreateMap<ProdutoDto, Produto>();
             CreateMap<RegisterDto, AppUser>();
+            CreateMap<Message, MessageDto>()
+                .ForMember(d => d.SenderPhotoUrl, o => o.MapFrom(
+                    s => s.Sender.Photos.FirstOrDefault(x => x.IsMain).Url))
+                .ForMember(d => d.RecipientPhotoUrl, o => o.MapFrom(
+                    s => s.Recipient.Photos.FirstOrDefault(x => x.IsMain).Url));
         }
     }
 }

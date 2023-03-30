@@ -42,6 +42,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { TimeagoModule } from 'ngx-timeago';
 import { FotoEditorComponent } from './produto/foto-editor/foto-editor.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
+import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
     TextInputComponent,
     DatePickerComponent,
     FotoEditorComponent,
+    MemberMessagesComponent,
   ],
   imports: [
     BrowserAnimationsModule,

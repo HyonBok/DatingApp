@@ -8,8 +8,12 @@ namespace API.Interfaces
     {
         void Update(Produto produto);
         Task<bool> SaveAllAsync();
-        Task<IEnumerable<Produto>> GetProdutosAsync();
+        void AddProduto(Produto produto);
+        void DeleteProduto(Produto produto);
+        Task<IEnumerable<ProdutoDto>> GetProdutosAsync();
+        Task<IEnumerable<ProdutoDto>> GetProdutosOfertaAsync();
         Task<Produto> GetProdutoByIdAsync(int id);
-        Task<Produto> GetProdutoByNomeAsync(string nome);
+        Task<ProdutoDto> GetProdutoDtoByIdAsync(int id);
+        Task<ProdutoDto> GetProdutoByUserAsync(string nome);
     }
 }
