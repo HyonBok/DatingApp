@@ -1,7 +1,9 @@
+using API.Commands;
 using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Handlers;
 using API.Interfaces;
 using API.Services;
 using AutoMapper;
@@ -36,6 +38,16 @@ namespace API.Controllers
             return produtoDto;
         }
 
+        [HttpGet("")]
+        public IActionResult ProdutoM(
+            [FromServices]IProdutoFindHandler handler,
+            [FromQuery]ProdutoFindByIdRequest command 
+        )
+        {
+            var response = handler.Handle(command);
+            return Ok(response);
+        }
+
         [HttpGet("listar")] // Get: api/produto/listar
         public async Task<ActionResult<IEnumerable<ProdutoDto>>> ListarProdutos()
         {
@@ -53,20 +65,13 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost("registrar")] // Post: api/produto/registrar
-        public async Task<ActionResult<ProdutoDto>> RegistrarProduto(RegistrarProdutoDto registroProdutoDto)
+        public async Task<ActionResult<ProdutoDto>> RegistrarProduto(RegistrarProdutoDto rPDto)
         {
             var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
 
-            var produto = new Produto
-            {
-                Nome = registroProdutoDto.Nome,
-                Preco = registroProdutoDto.Preco,
-                Marca = registroProdutoDto.Marca,
-                UnidadeVenda = registroProdutoDto.UnidadeVenda,
-                AppUser = user
-            };
+            var produto = new Produto(rPDto.Nome, rPDto.Marca, rPDto.Preco, rPDto.UnidadeVenda, user);
 
-            await _produtoRepository.SaveAllAsync();
+            
 
             var produtoDto = new ProdutoDto
             {
@@ -80,6 +85,17 @@ namespace API.Controllers
             };
 
             return produtoDto;
+        }
+
+        // Mediator
+        [HttpPost("registrarM")]
+        public IActionResult RegistrarProdutoM(
+            [FromServices]IProdutoRegistrarHandler handler,
+            [FromBody]ProdutoRequest command
+            )
+        {
+            var response = handler.Handle(command);
+            return Ok(response);
         }
 
         [Authorize]
