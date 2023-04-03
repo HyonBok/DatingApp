@@ -1,37 +1,39 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Commands;
 using API.Interfaces;
 using MediatR;
 
 namespace API.Handlers
 {
-    public class ProdutoFindHandler : IRequestHandler<ProdutoFindByIdRequest, ProdutoFindByIdResponse>
+    public class ProdutoFindHandler : IRequestHandler<ProdutoFindRequest, ProdutoResponse>
     {
         private readonly IProdutoRepository _repository;
-        
+
         public ProdutoFindHandler(IProdutoRepository repository)
         {
             _repository = repository;
-            
         }
 
-        public async Task<ProdutoFindByIdResponse> Handle(ProdutoFindByIdRequest request, CancellationToken token)
+        public async Task<ProdutoResponse> Handle(ProdutoFindRequest request, CancellationToken token)
         {
             var p = await _repository.GetProdutoByIdAsync(request.Id);
 
-            var result = new ProdutoFindByIdResponse
+            if (p == null) return null;
+
+            var result = new ProdutoResponse
             {
                 Id = p.Id,
                 Nome = p.Nome,
-                Preco = p.Preco,
-                PrecoDesconto = p.Preco,
                 Marca = p.Marca,
-                UnidadeVenda = p.UnidadeVenda
+                Preco = p.Preco,
+                Desconto = p.Desconto,
+                Sessao = p.Sessao,
+                Descricao = p.Descricao,
+                UnidadeVenda = p.UnidadeVenda,
+                FotoUrl = p.FotoUrl,
+                Usuario = p.AppUser.UserName
             };
             return result;
         }
+        
     }
 }

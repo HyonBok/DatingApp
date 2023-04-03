@@ -1,3 +1,4 @@
+using API.Commands;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
@@ -25,6 +26,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.PrecoDesconto, opt => opt.MapFrom
                     (src => (float)((int)(src.Preco * (100-src.Desconto)) * 100)/10000));
             CreateMap<ProdutoDto, Produto>();
+            CreateMap<ProdutoAtualizarRequest, Produto>();
             CreateMap<RegisterDto, AppUser>();
             CreateMap<Message, MessageDto>()
                 .ForMember(d => d.SenderPhotoUrl, o => o.MapFrom(

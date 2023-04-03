@@ -6,7 +6,7 @@ using MediatR;
 
 namespace API.Handlers
 {
-    public class ProdutoRegistrarHandler : IRequestHandler<ProdutoRequest, ProdutoResponse>
+    public class ProdutoRegistrarHandler : IRequestHandler<ProdutoRegistrarRequest, ProdutoResponse>
     {
         private readonly IProdutoRepository _repository;
         public ProdutoRegistrarHandler(IProdutoRepository repository)
@@ -14,9 +14,15 @@ namespace API.Handlers
             _repository = repository;
         }
 
-        public async Task<ProdutoResponse> Handle(ProdutoRequest request, CancellationToken token)
+        public async Task<ProdutoResponse> Handle(ProdutoRegistrarRequest request, CancellationToken token)
         {
-            var produto = new Produto(request.Nome, request.Marca, request.Preco, request.UnidadeVenda, request.AppUser);
+            var produto = new Produto{
+                Nome = request.Nome,
+                Marca = request.Marca, 
+                Preco = request.Preco, 
+                UnidadeVenda = request.UnidadeVenda, 
+                AppUser = request.AppUser
+            };
 
             _repository.AddProduto(produto);
             await _repository.SaveAllAsync();

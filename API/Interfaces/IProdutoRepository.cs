@@ -14,6 +14,6 @@ namespace API.Interfaces
         Task<IEnumerable<ProdutoDto>> GetProdutosOfertaAsync();
         Task<Produto> GetProdutoByIdAsync(int id);
         Task<ProdutoDto> GetProdutoDtoByIdAsync(int id);
-        Task<ProdutoDto> GetProdutoByUserAsync(string nome);
+        Task<IEnumerable<ProdutoDto>> GetProdutoByUserAsync(string nome);
     }
 }

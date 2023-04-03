@@ -6,8 +6,8 @@ using MediatR;
 
 namespace API.Commands
 {
-    public class ProdutoFindByIdRequest : IRequest<ProdutoFindByIdResponse>
+    public class ProdutoListSelfRequest : IRequest<List<ProdutoResponse>>
     {
-        public int Id { get; set; }
+        public string Nome { get; set; }
     }
 }

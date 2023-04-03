@@ -22,7 +22,7 @@ export class ProdutoService {
   }
 
   getProduto(id: string){
-    return this.http.get<Produto>(this.baseUrl + '/' + id);
+    return this.http.get<Produto>(this.baseUrl + '/?Id=' + id);
   }
 
   registrarProduto(produto: Produto){

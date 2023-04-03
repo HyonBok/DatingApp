@@ -1,0 +1,37 @@
+using API.Commands;
+using API.Interfaces;
+using MediatR;
+
+namespace API.Handlers
+{
+    public class ProdutoListSelfHandler : IRequestHandler<ProdutoListSelfRequest, List<ProdutoResponse>>
+    {
+        private readonly IProdutoRepository _repository;
+        public ProdutoListSelfHandler(IProdutoRepository repository)
+        {
+            _repository = repository;
+        }
+        public async Task<List<ProdutoResponse>> Handle(ProdutoListSelfRequest request, CancellationToken cancellationToken)
+        {
+            List<ProdutoResponse> list = new List<ProdutoResponse>();
+
+            foreach(var p in await _repository.GetProdutoByUserAsync(request.Nome)){
+                list.Add(new ProdutoResponse
+                {
+                    Id = p.Id,
+                    Nome = p.Nome,
+                    Marca = p.Marca,
+                    Preco = p.Preco,
+                    Desconto = p.Desconto,
+                    Sessao = p.Sessao,
+                    Descricao = p.Descricao,
+                    UnidadeVenda = p.UnidadeVenda,
+                    FotoUrl = p.FotoUrl,
+                    Usuario = p.Usuario
+                });
+            }
+
+            return list;
+        }
+    }
+}

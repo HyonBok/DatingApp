@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
 
 namespace API.Commands
 {
-    public class ProdutoFindByIdResponse
+    public class ProdutoAtualizarRequest : IRequest<ProdutoResponse>
     {
         public int Id { get; set; }
         public string Nome { get; set; }
@@ -18,5 +19,6 @@ namespace API.Commands
         public string UnidadeVenda { get; set; }
         public string FotoUrl { get; set; }
         public string Usuario { get; set; }
+        
     }
 }

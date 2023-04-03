@@ -1,140 +1,86 @@
 using API.Commands;
-using API.Data;
 using API.DTOs;
 using API.Entities;
-using API.Extensions;
-using API.Handlers;
 using API.Interfaces;
-using API.Services;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
     public class ProdutoController : BaseApiController
     {
         private readonly IProdutoRepository _produtoRepository;
-        private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
-        private readonly IUserRepository _userRepository;
-        public ProdutoController(IProdutoRepository produtoRepository, IMapper mapper,
-            IPhotoService photoService, IUserRepository userRepository)
+        private readonly IMediator _mediator;
+        
+        public ProdutoController(IProdutoRepository produtoRepository, IMediator mediator,
+            IPhotoService photoService)
         {
-            _userRepository = userRepository;
+            _mediator = mediator;
             _photoService = photoService;
-            // Recebe o contexto do banco de dados
             _produtoRepository = produtoRepository;
-            _mapper = mapper;
         }
 
-        [HttpGet("{id}")] // Get: api/produto/{id}
-        public async Task<ActionResult<ProdutoDto>> Produto(int id)
+        [HttpGet]
+        public async Task<IActionResult> Produto([FromQuery]ProdutoFindRequest command)
         {
-            var produtoDto = await _produtoRepository.GetProdutoDtoByIdAsync(id);
+            var response = await _mediator.Send(command);
 
-            return produtoDto;
-        }
+            if(response == null) return NoContent();
 
-        [HttpGet("")]
-        public IActionResult ProdutoM(
-            [FromServices]IProdutoFindHandler handler,
-            [FromQuery]ProdutoFindByIdRequest command 
-        )
-        {
-            var response = handler.Handle(command);
             return Ok(response);
         }
 
         [HttpGet("listar")] // Get: api/produto/listar
-        public async Task<ActionResult<IEnumerable<ProdutoDto>>> ListarProdutos()
+        public async Task<IActionResult> ListarProdutos()
         {
-            var produtosDto = await _produtoRepository.GetProdutosAsync();
+            var response = await _mediator.Send(new ProdutoListRequest());
 
-            return Ok(produtosDto);
+            return Ok(response);
         }
 
         [HttpGet("listar-ofertas")] 
-        public async Task<ActionResult<IEnumerable<ProdutoDto>>> ListarProdutosOferta() {
-            var produtosDto = await _produtoRepository.GetProdutosOfertaAsync();
+        public async Task<IActionResult> ListarOfertas() {
+            var response = await _mediator.Send(new ProdutoListOfertasRequest());
 
-            return Ok(produtosDto);
-        }
-
-        [Authorize]
-        [HttpPost("registrar")] // Post: api/produto/registrar
-        public async Task<ActionResult<ProdutoDto>> RegistrarProduto(RegistrarProdutoDto rPDto)
-        {
-            var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
-
-            var produto = new Produto(rPDto.Nome, rPDto.Marca, rPDto.Preco, rPDto.UnidadeVenda, user);
-
-            
-
-            var produtoDto = new ProdutoDto
-            {
-                Id = produto.Id,
-                Nome = produto.Nome,
-                Preco = produto.Preco,
-                PrecoDesconto = produto.Preco,
-                Marca = produto.Marca,
-                UnidadeVenda = produto.UnidadeVenda,
-                Sessao = produto.Sessao
-            };
-
-            return produtoDto;
-        }
-
-        // Mediator
-        [HttpPost("registrarM")]
-        public IActionResult RegistrarProdutoM(
-            [FromServices]IProdutoRegistrarHandler handler,
-            [FromBody]ProdutoRequest command
-            )
-        {
-            var response = handler.Handle(command);
             return Ok(response);
         }
 
         [Authorize]
-        [HttpGet("listself/{nome}")]
-        public async Task<ActionResult<IEnumerable<Produto>>> ListarProdutosUsuario(string nome)
+        [HttpPost("registrar")]
+        public async Task<IActionResult> RegistrarProduto([FromBody]ProdutoRegistrarRequest command)
         {
-            var produtosDto = await _produtoRepository.GetProdutoByUserAsync(nome);
+            var response = await _mediator.Send(command);
 
-            return Ok(produtosDto);
+            return Ok(response);
         }
 
         [Authorize]
-        [HttpDelete("deletar/{id}")]
-        public async Task<ActionResult> DeletarProduto(int id)
+        [HttpGet("listself/")]
+        public async Task<IActionResult> ListarProdutosUsuario([FromQuery]ProdutoListSelfRequest command)
         {
-            var produto = await _produtoRepository.GetProdutoByIdAsync(id);
+            var response = await _mediator.Send(command);
 
-            if (produto == null)
-            {
-                return NotFound("Produto não encontrado!"); // retorna código 404 caso não encontre o produto
-            }
+            return Ok(response);
+        }
 
-            _produtoRepository.DeleteProduto(produto);
-            await _produtoRepository.SaveAllAsync(); // salva as alterações
+        [Authorize]
+        [HttpDelete("deletar/")]
+        public IActionResult DeletarProduto([FromQuery]ProdutoDeleteRequest command)
+        {
+            _mediator.Send(command);
 
             return NoContent();
         }
 
         [Authorize]
         [HttpPut("atualizar")]
-        public async Task<ActionResult> AtualizarProduto(ProdutoDto produtoDto) {
-            var produto = await _produtoRepository.GetProdutoByIdAsync(produtoDto.Id);
+        public async Task<IActionResult> AtualizarProduto([FromBody]ProdutoAtualizarRequest command) {
+            var response = await _mediator.Send(command);
 
-            if(produto == null) return NotFound();
-
-            _mapper.Map(produtoDto, produto);
-            await _produtoRepository.SaveAllAsync();
-
-            return NoContent();
+            return Ok(response);
         }
 
         [Authorize]
@@ -161,6 +107,17 @@ namespace API.Controllers
             await _produtoRepository.SaveAllAsync();
 
             return Ok();
+        }
+
+        [HttpPost("add-foto/{id}")]
+        public async Task<IActionResult> AdicionarFotoM(IFormFile f, int id)
+        {
+            var response = await _mediator.Send(new ProdutoAddFotoRequest{
+                file = f,
+                IdProduto = id
+            });
+
+            return Ok(response);
         }
 
         [Authorize]

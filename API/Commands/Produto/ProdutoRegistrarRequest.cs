@@ -7,7 +7,7 @@ using MediatR;
 
 namespace API.Commands
 {
-    public class ProdutoRequest : IRequest<ProdutoResponse>
+    public class ProdutoRegistrarRequest : IRequest<ProdutoResponse>
     {
         public int Id { get; set; }
         public string Nome { get; set; }

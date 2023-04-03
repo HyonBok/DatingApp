@@ -25,6 +25,7 @@ namespace API.Data
         public async Task<Produto> GetProdutoByIdAsync(int id)
         {
             return await _context.Produtos
+                .Include(p => p.AppUser)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
@@ -35,12 +36,13 @@ namespace API.Data
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<ProdutoDto> GetProdutoByUserAsync(string nome)
+        public async Task<IEnumerable<ProdutoDto>> GetProdutoByUserAsync(string nome)
         {
             return await _context.Produtos
                 .Include(p => p.Fotos)
+                .Where(p => p.AppUser.UserName == nome)
                 .ProjectTo<ProdutoDto>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync(p => p.Usuario == nome);
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<ProdutoDto>> GetProdutosAsync()
