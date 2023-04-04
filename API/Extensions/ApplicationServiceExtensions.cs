@@ -15,8 +15,8 @@ namespace API.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services,
             IConfiguration config)
         {
-            // Mediator
             services.AddControllers();
+            // Mediator
             services.AddTransient<IProdutoRepository, ProdutoRepository>();
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
