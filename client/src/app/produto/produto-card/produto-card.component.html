@@ -17,8 +17,8 @@
             <i class="fa fa-shopping-cart me-2"></i>
             {{produto.nome}} {{produto.marca}} - {{produto.unidadeVenda}}
         </h6>
-        <p class="card-text text-center" *ngIf="produto.preco == produto.precoDesconto">R${{produto.preco}}</p>
-        <ul class="list-inline text-center" *ngIf="produto.preco != produto.precoDesconto">
+        <p class="card-text text-center" *ngIf="produto.desconto == 0">R${{produto.preco}}</p>
+        <ul class="list-inline text-center" *ngIf="produto.desconto != 0">
             <li class="list-inline-item">
                 <p class="card-text text-center" style="text-decoration:line-through">R${{produto.preco}}</p>
             </li>

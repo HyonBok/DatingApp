@@ -22,9 +22,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.FotoUrl, opt => opt.MapFrom
                     (src => src.Fotos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Usuario, opt => opt.MapFrom
-                    (src => src.AppUser.UserName))
-                .ForMember(dest => dest.PrecoDesconto, opt => opt.MapFrom
-                    (src => (float)((int)(src.Preco * (100-src.Desconto)) * 100)/10000));
+                    (src => src.AppUser.UserName));
             CreateMap<ProdutoDto, Produto>();
             CreateMap<ProdutoAtualizarRequest, Produto>();
             CreateMap<RegisterDto, AppUser>();

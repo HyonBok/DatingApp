@@ -8,7 +8,6 @@ namespace API.DTOs
         public string Nome { get; set; }
         public float Preco { get; set; }
         public float Desconto { get; set; }
-        public float PrecoDesconto { get; set; }
         public string Marca { get; set; }
         public string Sessao { get; set; }
         public string Descricao { get; set; }

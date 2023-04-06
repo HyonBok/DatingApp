@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Produto } from '../_models/produto';
 
@@ -14,11 +14,11 @@ export class ProdutoService {
   constructor(private http: HttpClient) { }
 
   getProdutos(){
-    return this.http.get<Produto[]>(this.baseUrl + '/listar');
+    return (this.http.get<Produto[]>(this.baseUrl + '/listar'));
   }
 
-  getProdutosOferta(){
-    return this.http.get<Produto[]>(this.baseUrl + '/listar-ofertas');
+  getProdutosOferta(){ 
+    return (this.http.get<Produto[]>(this.baseUrl + '/listar-ofertas'));
   }
 
   getProduto(id: string){
@@ -26,11 +26,11 @@ export class ProdutoService {
   }
 
   registrarProduto(produto: Produto){
-    return this.http.post<Produto>(this.baseUrl + '/registrar', produto);
+    return (this.http.post<Produto>(this.baseUrl + '/registrar', produto));
   }
 
   getProdutosByName(nome:string){
-    return this.http.get<Produto[]>(this.baseUrl + '/listself/' + nome);
+    return (this.http.get<Produto[]>(this.baseUrl + '/listself/?nome=' + nome));
   }
 
   deleteProduto(id:number){

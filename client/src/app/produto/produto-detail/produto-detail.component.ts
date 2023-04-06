@@ -42,9 +42,9 @@ export class ProdutoDetailComponent implements OnInit {
   }
 
   loadProduto(){
-    const produto = this.route.snapshot.paramMap.get('id');
-    if (!produto) return;
-    this.produtoService.getProduto(produto).subscribe({
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) return;
+    this.produtoService.getProduto(id).subscribe({
       next: produto => {
         this.produto = produto,
         this.galleryImage = this.getImages()

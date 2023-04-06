@@ -26,12 +26,25 @@ namespace API.Handlers
                 Marca = p.Marca,
                 Preco = p.Preco,
                 Desconto = p.Desconto,
+                PrecoDesconto = (p.Preco * ((100 - p.Desconto) / 100)).ToString("N2"),
                 Sessao = p.Sessao,
                 Descricao = p.Descricao,
                 UnidadeVenda = p.UnidadeVenda,
                 FotoUrl = p.FotoUrl,
                 Usuario = p.AppUser.UserName
             };
+
+            foreach (var item in p.Fotos)
+            {
+                var f = new ProdutoFotoResponse
+                {
+                    Id = item.Id,
+                    Url = item.Url,
+                    IsMain = item.IsMain
+                };
+                result.Fotos.Add(f);
+            }
+
             return result;
         }
         

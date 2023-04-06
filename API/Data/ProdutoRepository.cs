@@ -26,6 +26,7 @@ namespace API.Data
         {
             return await _context.Produtos
                 .Include(p => p.AppUser)
+                .Include(p => p.Fotos)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 

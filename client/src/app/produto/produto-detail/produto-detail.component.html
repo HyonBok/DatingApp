@@ -3,7 +3,7 @@
         <div class="card card-body">
             <carousel>
                 <slide *ngFor="let foto of produto.fotos">
-                  <img src="{{foto.url}}" alt="first slide" style="display: block; width: 100%;">
+                  <img src="{{foto.url || './assets/produto.png'}}" alt="{{produto.nome}} {{produto.marca}}" style="display: block; width: 100%;">
                 </slide>
             </carousel>
             <div class="card-footer">
@@ -22,9 +22,9 @@
         <tabset class="member-tabset">
             <tab heading="Produto">
                 <h4>Preço:</h4>
-                <p *ngIf="produto.preco == produto.precoDesconto">
+                <p *ngIf="produto.desconto == 0">
                     R${{produto.preco}}</p>
-                <div class="list-inline" *ngIf="produto.preco != produto.precoDesconto">
+                <div class="list-inline" *ngIf="produto.desconto != 0">
                     <p class="list-inline-item" style="text-decoration:line-through">R${{produto.preco}}</p>
                     <p class="list-inline-item">- R${{produto.precoDesconto}}</p>
                 </div>

@@ -23,6 +23,7 @@ namespace API.Handlers
                     Marca = p.Marca,
                     Preco = p.Preco,
                     Desconto = p.Desconto,
+                    PrecoDesconto = (p.Preco * ((100 - p.Desconto) / 100)).ToString("N2"),
                     Sessao = p.Sessao,
                     Descricao = p.Descricao,
                     UnidadeVenda = p.UnidadeVenda,

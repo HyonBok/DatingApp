@@ -32,7 +32,7 @@ namespace API.Handlers
                 Id = request.Id,
                 Nome = request.Nome,
                 Preco = request.Preco,
-                PrecoDesconto = request.Preco,
+                PrecoDesconto = request.Preco.ToString(),
                 Marca = request.Marca,
                 UnidadeVenda = request.UnidadeVenda
             };

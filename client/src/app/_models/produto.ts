@@ -4,7 +4,7 @@ export interface Produto {
     nome: string;
     preco: number;
     desconto: number;
-    precoDesconto: number;
+    precoDesconto: string;
     marca: string;
     descricao: string;
     sessao: string;
