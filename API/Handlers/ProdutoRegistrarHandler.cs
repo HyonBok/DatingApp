@@ -9,19 +9,23 @@ namespace API.Handlers
     public class ProdutoRegistrarHandler : IRequestHandler<ProdutoRegistrarRequest, ProdutoResponse>
     {
         private readonly IProdutoRepository _repository;
-        public ProdutoRegistrarHandler(IProdutoRepository repository)
+        private readonly IUserRepository _userRepository;
+        public ProdutoRegistrarHandler(IProdutoRepository repository, IUserRepository userRepository)
         {
+            _userRepository = userRepository;
             _repository = repository;
         }
 
         public async Task<ProdutoResponse> Handle(ProdutoRegistrarRequest request, CancellationToken token)
         {
+            var appUser = await _userRepository.GetUserByUsernameAsync(request.Usuario);
+
             var produto = new Produto{
                 Nome = request.Nome,
                 Marca = request.Marca, 
                 Preco = request.Preco, 
                 UnidadeVenda = request.UnidadeVenda, 
-                AppUser = request.AppUser
+                AppUser = appUser
             };
 
             _repository.AddProduto(produto);
@@ -29,12 +33,12 @@ namespace API.Handlers
 
             var result = new ProdutoResponse
             {
-                Id = request.Id,
-                Nome = request.Nome,
-                Preco = request.Preco,
-                PrecoDesconto = request.Preco.ToString(),
-                Marca = request.Marca,
-                UnidadeVenda = request.UnidadeVenda
+                Id = produto.Id,
+                Nome = produto.Nome,
+                Preco = produto.Preco,
+                PrecoDesconto = produto.Preco.ToString(),
+                Marca = produto.Marca,
+                UnidadeVenda = produto.UnidadeVenda
             };
             return result;
         }

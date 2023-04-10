@@ -43,6 +43,12 @@ import { TimeagoModule } from 'ngx-timeago';
 import { FotoEditorComponent } from './produto/foto-editor/foto-editor.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
+import { HasRoleDirective } from './_directives/has-role.directive';
+import { UserManagementComponent } from './admin/user-management/user-management.component';
+import { PhotoManagementComponent } from './admin/photo-management/photo-management.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { RolesModalComponent } from './modal/roles-modal/roles-modal.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +77,11 @@ import { MemberMessagesComponent } from './members/member-messages/member-messag
     DatePickerComponent,
     FotoEditorComponent,
     MemberMessagesComponent,
+    AdminPanelComponent,
+    HasRoleDirective,
+    UserManagementComponent,
+    PhotoManagementComponent,
+    RolesModalComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -93,7 +104,8 @@ import { MemberMessagesComponent } from './members/member-messages/member-messag
     PaginationModule.forRoot(),
     ButtonsModule.forRoot(),
     TimeagoModule.forRoot(),
-    CarouselModule.forRoot()
+    CarouselModule.forRoot(),
+    ModalModule.forRoot()
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
